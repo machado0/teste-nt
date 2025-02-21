@@ -1,0 +1,4 @@
+CREATE TABLE associado (
+    id BIGSERIAL PRIMARY KEY,
+    cpf VARCHAR(255) NOT NULL
+);
