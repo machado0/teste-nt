@@ -1,6 +1,5 @@
 package com.machado0.teste_nt.associado;
 
-import lombok.Builder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,7 +25,7 @@ public class AssociadoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AssociadoDTO>> listarTodos(@PageableDefault(size = 10, page = 0, direction = Sort.Direction.ASC) Pageable pageable ) {
+    public ResponseEntity<Page<AssociadoDTO>> listarTodos(@PageableDefault(size = 10, page = 0, direction = Sort.Direction.ASC) Pageable pageable) {
         Page<AssociadoDTO> associados = associadoService.listarTodos(pageable);
         return ResponseEntity.ok(associados);
     }
