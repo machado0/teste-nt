@@ -2,6 +2,8 @@ package com.machado0.teste_nt.pauta;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,29 +21,27 @@ public class PautaController {
     }
 
     @PostMapping
-    public ResponseEntity<Pauta> criar(@RequestBody Pauta pauta) {
-        Pauta pautaCriada = pautaService.criar(pauta);
+    public ResponseEntity<PautaDTO> criar(@RequestBody PautaDTO pauta) {
+        PautaDTO pautaCriada = pautaService.criar(pauta);
         return ResponseEntity.status(HttpStatus.CREATED).body(pautaCriada);
     }
 
     @GetMapping
-    public ResponseEntity<Page<Pauta>> listarTodas(@RequestParam Pageable pageable) {
-        Page<Pauta> pautas = pautaService.listarTodas(pageable);
+    public ResponseEntity<Page<PautaDTO>> listarTodas(@PageableDefault(size = 10, page = 0, direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<PautaDTO> pautas = pautaService.listarTodas(pageable);
         return ResponseEntity.ok(pautas);
     }
 
-    //TODO transformar tudo em DTO
-
     @GetMapping("/{id}")
-    public ResponseEntity<Pauta> buscarPorId(@PathVariable Long id) {
-        Pauta pauta = pautaService.buscarPorId(id);
+    public ResponseEntity<PautaDTO> buscarPorId(@PathVariable Long id) {
+        PautaDTO pauta = pautaService.buscarPorId(id);
         return ResponseEntity.ok(pauta);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pauta> atualizar(@PathVariable Long id, @RequestBody Pauta pauta) {
-        pauta.setId(id);
-        Pauta pautaAtualizada = pautaService.atualizar(pauta);
+    public ResponseEntity<PautaDTO> atualizar(@PathVariable Long id,
+                                              @RequestBody PautaDTO pauta) {
+        PautaDTO pautaAtualizada = pautaService.atualizar(pauta, id);
         return ResponseEntity.ok(pautaAtualizada);
     }
 
@@ -51,8 +51,9 @@ public class PautaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/abrirSessao")
-    public ResponseEntity<Void> abrirSessao(@RequestParam Long pautaId, @RequestParam OffsetDateTime tempoEncerramento) {
+    @GetMapping("/abrir-sessao")
+    public ResponseEntity<Void> abrirSessao(@RequestParam Long pautaId,
+                                            @RequestParam OffsetDateTime tempoEncerramento) {
         pautaService.abrirSessao(pautaId, tempoEncerramento);
         return ResponseEntity.noContent().build();
     }

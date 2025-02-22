@@ -15,28 +15,33 @@ public class AssociadoService {
         this.associadoRepository = associadoRepository;
     }
 
-    public Associado criar(Associado associado) {
-        return associadoRepository.save(associado);
+    public AssociadoDTO criar(AssociadoDTO associado) {
+        Associado associadoEntity = AssociadoMapper.toEntity(associado);
+        return AssociadoMapper.toDTO(associadoRepository.save(associadoEntity));
     }
 
-    public Associado buscarPorId(Long id) {
+    public AssociadoDTO buscarPorId(Long id) {
         return associadoRepository.findById(id)
+                .map(AssociadoMapper::toDTO)
                 .orElseThrow(() -> new RuntimeException("Associado não encontrado"));
     }
 
-    public Page<Associado> listarTodos(Pageable pageable) {
-        return associadoRepository.findAll(pageable);
+    public Page<AssociadoDTO> listarTodos(Pageable pageable) {
+        return associadoRepository.findAll(pageable).map(AssociadoMapper::toDTO);
     }
 
     public void excluir(Long id) {
         associadoRepository.deleteById(id);
     }
 
-    public Associado atualizar(Associado associado) {
-        if (!associadoRepository.existsById(associado.getId())) {
+    public AssociadoDTO atualizar(AssociadoDTO associado, Long id) {
+        if (!associadoRepository.existsById(id)) {
             throw new RuntimeException("Associado não encontrado");
         }
 
-        return associadoRepository.save(associado);
+        Associado associadoEntity = AssociadoMapper.toEntity(associado);
+        associadoEntity.setId(id);
+
+        return AssociadoMapper.toDTO(associadoRepository.save(associadoEntity));
     }
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 @Data
@@ -13,7 +14,8 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "pauta")
-public class Pauta {
+@Entity
+public class Pauta implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +27,5 @@ public class Pauta {
 
     @Column(name = "tempo_encerramento")
     private OffsetDateTime tempoEncerramento;
-
 
 }

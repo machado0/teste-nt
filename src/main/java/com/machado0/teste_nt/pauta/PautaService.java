@@ -16,35 +16,40 @@ public class PautaService {
 
     private final PautaRepository pautaRepository;
 
-    public Pauta criar(Pauta pauta) {
-        return pautaRepository.save(pauta);
+    public PautaDTO criar(PautaDTO pauta) {
+        return PautaMapper.toDTO(pautaRepository.save(PautaMapper.toEntity(pauta)));
     }
 
-    public Pauta buscarPorId(Long id) {
+    public PautaDTO buscarPorId(Long id) {
         return pautaRepository.findById(id)
+                .map(PautaMapper::toDTO)
                 .orElseThrow(() -> new RuntimeException("Pauta não encontrada"));
     }
 
-    public Page<Pauta> listarTodas(Pageable pageable) {
-        return pautaRepository.findAll(pageable);
+    public Page<PautaDTO> listarTodas(Pageable pageable) {
+        return pautaRepository.findAll(pageable)
+                .map(PautaMapper::toDTO);
     }
 
     public void excluir(Long id) {
         pautaRepository.deleteById(id);
     }
 
-    public Pauta atualizar(Pauta pauta) {
-        if (!pautaRepository.existsById(pauta.getId())) {
+    public PautaDTO atualizar(PautaDTO pauta, Long id) {
+        if (!pautaRepository.existsById(id)) {
             throw new RuntimeException("Pauta não encontrada");
         }
 
+        Pauta pautaEntity = PautaMapper.toEntity(pauta);
+        pautaEntity.setId(id);
 
-        return pautaRepository.save(pauta);
+        return PautaMapper.toDTO(pautaRepository.save(pautaEntity));
     }
 
     public void abrirSessao(Long pautaId, OffsetDateTime tempoEncerramento) {
-        Pauta pauta = this.buscarPorId(pautaId);
+        Pauta pauta = pautaRepository.findById(pautaId)
+                .orElseThrow(() -> new RuntimeException("Pauta não encontrada"));
         pauta.setTempoEncerramento(tempoEncerramento);
-        this.atualizar(pauta);
+        pautaRepository.save(pauta);
     }
 }
