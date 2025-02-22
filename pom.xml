@@ -100,11 +100,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<annotationProcessorPaths>
-						<groupId>org.projectlombok</groupId>
-						<artifactId>lombok</artifactId>
-						<version>1.16.18</version>
-					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -124,5 +119,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
