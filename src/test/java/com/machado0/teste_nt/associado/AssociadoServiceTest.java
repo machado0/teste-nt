@@ -1,33 +1,41 @@
 package com.machado0.teste_nt.associado;
 
-import org.junit.Test;
+import com.machado0.teste_nt.config.IntegracaoUserInfo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@AutoConfigureMockMvc
-@RunWith(SpringRunner.class)
-@ExtendWith(MockitoExtension.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
-public class AssociadoServiceTest {
+@TestPropertySource("classpath:application-test.properties")
+class AssociadoServiceTest {
+
+    private AssociadoService associadoService;
 
     @Autowired
-    private AssociadoService associadoService;
+    private AssociadoRepository associadoRepository;
+
+    @Mock
+    private IntegracaoUserInfo integracaoUserInfoMock;
+
+    @BeforeEach
+    public void setUp() {
+        this.associadoService = new AssociadoService(associadoRepository, integracaoUserInfoMock);
+    }
 
     @Test
     @DisplayName("Deve criar um associado")
     public void criarAssociadoTest() {
-        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-85"));
+        when(integracaoUserInfoMock.verificarCpf(anyString())).thenReturn(Status.ABLE_TO_VOTE.toString());
+        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-82"));
         AssociadoDTO associadoCriado = associadoService.criar(associado);
 
         assertEquals(associado.cpf(), associadoCriado.cpf());
@@ -38,9 +46,10 @@ public class AssociadoServiceTest {
     @Test
     @DisplayName("Deve excluir um associado")
     public void excluirAssociadoTest() {
-        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-88"));
+        when(integracaoUserInfoMock.verificarCpf(anyString())).thenReturn(Status.ABLE_TO_VOTE.toString());
+        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-81"));
 
-        assertDoesNotThrow(() -> associadoService.buscarPorId(associado.id()));
+        assertNotNull(associadoService.buscarPorId(associado.id()));
         associadoService.excluir(associado.id());
         assertThrows(RuntimeException.class, () -> associadoService.buscarPorId(associado.id()));
 
@@ -49,10 +58,11 @@ public class AssociadoServiceTest {
     @Test
     @DisplayName("Deve atualizar um associado")
     public void atualizarAssociadoTest() {
-        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-88"));
-        AssociadoDTO associadoAtualizado = associadoService.atualizar(new AssociadoDTO(associado.id(), "888.888.888-99"), associado.id());
+        when(integracaoUserInfoMock.verificarCpf(anyString())).thenReturn(Status.ABLE_TO_VOTE.toString());
+        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-92"));
+        AssociadoDTO associadoAtualizado = associadoService.atualizar(new AssociadoDTO(associado.id(), "888.888.888-77"), associado.id());
 
-        assertEquals("888.888.888-99", associadoAtualizado.cpf());
+        assertEquals("888.888.888-77", associadoAtualizado.cpf());
 
         associadoService.excluir(associado.id());
     }
@@ -60,8 +70,9 @@ public class AssociadoServiceTest {
     @Test
     @DisplayName("Deve buscar todos os associados")
     public void buscarTodosOsAssociadosTest() {
-        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-88"));
-        AssociadoDTO associado2 = associadoService.criar(new AssociadoDTO(null, "888.888.888-87"));
+        when(integracaoUserInfoMock.verificarCpf(anyString())).thenReturn(Status.ABLE_TO_VOTE.toString());
+        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-91"));
+        AssociadoDTO associado2 = associadoService.criar(new AssociadoDTO(null, "888.888.888-93"));
 
         associado = associadoService.criar(associado);
         associado2 = associadoService.criar(associado2);

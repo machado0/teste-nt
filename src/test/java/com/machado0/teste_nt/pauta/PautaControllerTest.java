@@ -1,19 +1,15 @@
 package com.machado0.teste_nt.pauta;
 
 import com.machado0.teste_nt.util.Utils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -27,20 +23,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@RunWith(SpringRunner.class)
-@ExtendWith(MockitoExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class PautaControllerTest {
+class PautaControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
-    private PautaService pautaService;
+    private PautaService pautaServiceMock;
 
     @InjectMocks
     private PautaController pautaController;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(pautaController).build();
     }
@@ -49,7 +43,7 @@ public class PautaControllerTest {
     @Test
     public void criarPautaTest() throws Exception {
         PautaDTO pautaDTO = new PautaDTO(1L, "teste", "descrição", null);
-        when(pautaService.criar(pautaDTO)).thenReturn(pautaDTO);
+        when(pautaServiceMock.criar(pautaDTO)).thenReturn(pautaDTO);
 
         mockMvc.perform(post("/pautas")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +56,7 @@ public class PautaControllerTest {
         PautaDTO pautaDTO = new PautaDTO(1L, "teste", "descrição", null);
         ArrayList<PautaDTO> lista = new ArrayList<>();
         lista.add(pautaDTO);
-        when(pautaService.listarTodas(any())).thenReturn(new PageImpl<>(lista));
+        when(pautaServiceMock.listarTodas(any())).thenReturn(new PageImpl<>(lista));
 
         mockMvc.perform(get("/pautas")
                         .param("page", "0")
@@ -73,7 +67,7 @@ public class PautaControllerTest {
 
     @Test
     public void buscarPorIdTest() throws Exception {
-        when(pautaService.buscarPorId(anyLong())).thenReturn(new PautaDTO(1L, "teste", "descrição", null));
+        when(pautaServiceMock.buscarPorId(anyLong())).thenReturn(new PautaDTO(1L, "teste", "descrição", null));
 
         mockMvc.perform(get("/pautas/1"))
                 .andExpect(status().isOk());
@@ -82,7 +76,7 @@ public class PautaControllerTest {
     @Test
     public void atualizarPautaTest() throws Exception {
         PautaDTO pautaDTO = new PautaDTO(1L, "teste", "descrição", null);
-        when(pautaService.atualizar(pautaDTO, 1L)).thenReturn(pautaDTO);
+        when(pautaServiceMock.atualizar(pautaDTO, 1L)).thenReturn(pautaDTO);
 
         mockMvc.perform(put("/pautas/1")
                         .contentType(MediaType.APPLICATION_JSON)
