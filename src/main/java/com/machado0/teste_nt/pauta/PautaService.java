@@ -1,5 +1,6 @@
 package com.machado0.teste_nt.pauta;
 
+import com.machado0.teste_nt.config.kafka.EncerramentoSessaoTask;
 import com.machado0.teste_nt.config.kafka.KafkaProducerConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

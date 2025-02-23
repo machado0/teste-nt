@@ -17,9 +17,14 @@ public class AssociadoController {
     }
 
     @PostMapping
-    public ResponseEntity<AssociadoDTO> criar(@RequestBody AssociadoDTO associado) {
-        AssociadoDTO associadoCriado = associadoService.criar(associado);
-        return ResponseEntity.status(HttpStatus.CREATED).body(associadoCriado);
+    public ResponseEntity<?> criar(@RequestBody AssociadoDTO associado) {
+        try {
+            AssociadoDTO associadoCriado = associadoService.criar(associado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(associadoCriado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
     }
 
     @GetMapping

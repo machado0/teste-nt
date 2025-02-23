@@ -1,5 +1,6 @@
 package com.machado0.teste_nt.voto;
 
+import com.machado0.teste_nt.associado.Status;
 import com.machado0.teste_nt.util.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -91,5 +93,25 @@ public class VotoControllerTest {
     public void excluirPautaTest() throws Exception {
         mockMvc.perform(delete("/votos/1"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void listarResultadoTest() throws Exception {
+        VotoDTO votoDTO1 = new VotoDTO(1L, 1L, 1L, true);
+        VotoDTO votoDTO2 = new VotoDTO(1L, 1L, 1L, true);
+        VotoDTO votoDTO3 = new VotoDTO(1L, 1L, 1L, false);
+        ArrayList<VotoDTO> lista = new ArrayList<>();
+
+        lista.add(votoDTO1);
+        lista.add(votoDTO2);
+        lista.add(votoDTO3);
+
+        when(votoServiceMock.listarResultados(anyLong())).thenReturn(new ResultadoDTO(Status.ABLE_TO_VOTE.toString(), lista));
+        mockMvc.perform(get("/votos/resultados/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultado", is(Status.ABLE_TO_VOTE.toString())))
+                .andExpect(jsonPath("$.votos.[0].voto", is(true)))
+                .andExpect(jsonPath("$.votos.[1].voto", is(true)))
+                .andExpect(jsonPath("$.votos.[2].voto", is(false)));
     }
 }

@@ -1,6 +1,5 @@
 package com.machado0.teste_nt.associado;
 
-import com.machado0.teste_nt.config.IntegracaoUserInfo;
 import com.machado0.teste_nt.util.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,9 +28,6 @@ class AssociadoControllerTest {
 
     @Mock
     private AssociadoService associadoServiceMock;
-
-    @Mock
-    private IntegracaoUserInfo integracaoUserInfoMock;
 
     @InjectMocks
     private AssociadoController associadoController;

@@ -2,9 +2,6 @@ package com.machado0.teste_nt.voto;
 
 import com.machado0.teste_nt.util.PageResponse;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +53,8 @@ public class VotoController {
 
     @GetMapping("/resultados/{pautaId}")
     public ResponseEntity<ResultadoDTO> listarResultados(@PathVariable Long pautaId,
-                                                         @PageableDefault(size = 10, page = 0, direction = Sort.Direction.ASC) Pageable pageable) {
-        return ResponseEntity.ok(votoService.listarResultados(pautaId, pageable));
+                                                         @RequestParam(defaultValue = "0", required = false) int page,
+                                                         @RequestParam(defaultValue = "10", required = false) int size) {
+        return ResponseEntity.ok(votoService.listarResultados(pautaId));
     }
 }

@@ -1,6 +1,6 @@
 package com.machado0.teste_nt.voto;
 
-import org.springframework.data.domain.Page;
+import java.util.List;
 
-public record ResultadoDTO(String resultado, Page<VotoDTO> votos) {
+public record ResultadoDTO(String resultado, List<VotoDTO> votos) {
 }

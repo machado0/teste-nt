@@ -1,5 +1,6 @@
-package com.machado0.teste_nt.pauta;
+package com.machado0.teste_nt.config.kafka;
 
+import com.machado0.teste_nt.pauta.PautaDTO;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.TimerTask;

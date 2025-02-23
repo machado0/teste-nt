@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.OffsetDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -76,5 +78,20 @@ class PautaServiceTest {
         assertEquals(2, pautaService.listarTodas(Pageable.unpaged()).getContent().size());
         pautaService.excluir(pauta1.id());
         pautaService.excluir(pauta2.id());
+    }
+
+    @Test
+    @DisplayName("Deve abrir a sessão da pauta")
+    public void abrirSessaoPautaTest() {
+        PautaDTO pauta = new PautaDTO(null, "tituloTesteAbrirSessao", "descricao", null);
+        pauta = pautaService.criar(pauta);
+
+        OffsetDateTime tempoEncerramento = OffsetDateTime.now().plusMinutes(5L);
+
+        pautaService.abrirSessao(pauta.id(), tempoEncerramento);
+
+        assertEquals(tempoEncerramento.withSecond(0), pautaService.buscarPorId(pauta.id()).tempoEncerramento().withSecond(0));
+
+        pautaService.excluir(pauta.id());
     }
 }

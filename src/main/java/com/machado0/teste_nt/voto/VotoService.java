@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import static java.util.Objects.nonNull;
 
@@ -61,16 +62,16 @@ public class VotoService {
         return VotoMapper.toDTO(votoRepository.save(votoEntity));
     }
 
-    public ResultadoDTO listarResultados(Long pautaId, Pageable pageable) {
+    public ResultadoDTO listarResultados(Long pautaId) {
         ResultadoDTO resultadoDTO;
         int votosPositivos = 0;
-        Page<VotoDTO> votos = listarVotosPorPauta(pautaId, pageable);
+        List<VotoDTO> votos = listarVotosPorPauta(pautaId);
         for (VotoDTO voto : votos) {
             if (voto.voto()) {
                 votosPositivos += 1;
             }
         }
-        if (votosPositivos > votos.getTotalElements() / 2) {
+        if (votosPositivos > votos.size() / 2) {
             resultadoDTO = new ResultadoDTO("Pauta aprovada", votos);
         } else {
             resultadoDTO = new ResultadoDTO("Pauta reprovada", votos);
@@ -78,8 +79,10 @@ public class VotoService {
         return resultadoDTO;
     }
 
-    private Page<VotoDTO> listarVotosPorPauta(Long pautaId, Pageable pageable) {
-        return votoRepository.findByPautaId(pautaId, pageable)
-                .map(VotoMapper::toDTO);
+    private List<VotoDTO> listarVotosPorPauta(Long pautaId) {
+        return votoRepository.findByPautaId(pautaId)
+                .stream()
+                .map(VotoMapper::toDTO)
+                .toList();
     }
 }
