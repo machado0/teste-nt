@@ -19,10 +19,10 @@ public class PautaService {
 
     @Autowired
     private final KafkaProducerConfig kafkaProducerConfig;
+
     @Autowired
     private final PautaRepository pautaRepository;
 
-    @Autowired
     public PautaService(KafkaProducerConfig kafkaProducerConfig,
                         PautaRepository pautaRepository) {
         this.kafkaProducerConfig = kafkaProducerConfig;
