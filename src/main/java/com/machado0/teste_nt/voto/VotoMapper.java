@@ -13,8 +13,8 @@ public class VotoMapper {
         }
         return new VotoDTO(
                 voto.getId(),
-                voto.getAssociado().getId(),
                 voto.getPauta().getId(),
+                voto.getAssociado().getId(),
                 voto.isVoto()
         );
     }

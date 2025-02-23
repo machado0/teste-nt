@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 
+import static java.util.Objects.nonNull;
+
 @Service
 public class VotoService {
 
@@ -24,7 +26,8 @@ public class VotoService {
 
     public VotoDTO criar(VotoDTO voto) {
         PautaDTO pauta = pautaService.buscarPorId(voto.pautaId());
-        if (OffsetDateTime.now().isBefore(pauta.tempoEncerramento())) {
+        if (nonNull(pauta.tempoEncerramento()) &&
+                OffsetDateTime.now().isBefore(pauta.tempoEncerramento())) {
             return VotoMapper.toDTO(votoRepository.save(VotoMapper.toEntity(voto)));
         } else {
             throw new RuntimeException("Sessão encerrada");

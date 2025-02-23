@@ -1,9 +1,7 @@
 package com.machado0.teste_nt.associado;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import com.machado0.teste_nt.util.PageResponse;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +23,9 @@ public class AssociadoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AssociadoDTO>> listarTodos(@PageableDefault(size = 10, page = 0, direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<AssociadoDTO> associados = associadoService.listarTodos(pageable);
-        return ResponseEntity.ok(associados);
+    public ResponseEntity<PageResponse<AssociadoDTO>> listarTodos(@RequestParam(defaultValue = "0", required = false) int page,
+                                                                  @RequestParam(defaultValue = "10", required = false) int size) {
+        return ResponseEntity.ok((new PageResponse<>(associadoService.listarTodos(PageRequest.of(page, size)))));
     }
 
     @GetMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.machado0.teste_nt.voto;
 
-import org.springframework.data.domain.Page;
+import com.machado0.teste_nt.util.PageResponse;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,7 +20,7 @@ public class VotoController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> criar(@RequestBody VotoDTO voto) {
+    public ResponseEntity<?> criar(@RequestBody VotoDTO voto) {
         VotoDTO votoCriado;
         try {
             votoCriado = votoService.criar(voto);
@@ -29,16 +30,15 @@ public class VotoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(votoCriado);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<VotoDTO>> listarTodos(@PageableDefault(size = 10, page = 0, direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<VotoDTO> votos = votoService.listarTodos(pageable);
-        return ResponseEntity.ok(votos);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<VotoDTO> buscarPorId(@PathVariable Long id) {
-        VotoDTO voto = votoService.buscarPorId(id);
-        return ResponseEntity.ok(voto);
+        return ResponseEntity.ok(votoService.buscarPorId(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<VotoDTO>> listarTodos(@RequestParam(defaultValue = "0", required = false) int page,
+                                                             @RequestParam(defaultValue = "10", required = false) int size) {
+        return ResponseEntity.ok((new PageResponse<>(votoService.listarTodos(PageRequest.of(page, size)))));
     }
 
     @PutMapping("/{id}")
@@ -56,7 +56,7 @@ public class VotoController {
 
     @GetMapping("/resultados/{pautaId}")
     public ResponseEntity<ResultadoDTO> listarResultados(@PathVariable Long pautaId,
-                                                          @PageableDefault(size = 10, page = 0, direction = Sort.Direction.ASC) Pageable pageable) {
+                                                         @PageableDefault(size = 10, page = 0, direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(votoService.listarResultados(pautaId, pageable));
     }
 }
