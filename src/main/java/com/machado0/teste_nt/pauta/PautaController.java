@@ -1,9 +1,7 @@
 package com.machado0.teste_nt.pauta;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import com.machado0.teste_nt.util.PageResponse;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +25,9 @@ public class PautaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PautaDTO>> listarTodas(@PageableDefault(size = 10, page = 0, direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<PautaDTO> pautas = pautaService.listarTodas(pageable);
-        return ResponseEntity.ok(pautas);
+    public ResponseEntity<PageResponse<PautaDTO>> listarTodas(@RequestParam(defaultValue = "0", required = false) int page,
+                                                              @RequestParam(defaultValue = "10", required = false) int size) {
+        return ResponseEntity.ok((new PageResponse<>(pautaService.listarTodas(PageRequest.of(page, size)))));
     }
 
     @GetMapping("/{id}")
