@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,7 +91,7 @@ class PautaServiceTest {
 
         pautaService.abrirSessao(pauta.id(), tempoEncerramento);
 
-        assertEquals(tempoEncerramento.withSecond(0), pautaService.buscarPorId(pauta.id()).tempoEncerramento().withSecond(0));
+        assertEquals(tempoEncerramento.truncatedTo(ChronoUnit.MINUTES), pautaService.buscarPorId(pauta.id()).tempoEncerramento().truncatedTo(ChronoUnit.MINUTES));
 
         pautaService.excluir(pauta.id());
     }

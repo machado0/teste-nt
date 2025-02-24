@@ -27,7 +27,7 @@ class AssociadoServiceTest {
     @Test
     @DisplayName("Deve criar um associado")
     public void criarAssociadoTest() {
-        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-82"));
+        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-85"));
         AssociadoDTO associadoCriado = associadoService.criar(associado);
 
         assertEquals(associado.cpf(), associadoCriado.cpf());
@@ -49,10 +49,10 @@ class AssociadoServiceTest {
     @Test
     @DisplayName("Deve atualizar um associado")
     public void atualizarAssociadoTest() {
-        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-92"));
+        AssociadoDTO associado = associadoService.criar(new AssociadoDTO(null, "888.888.888-94"));
         AssociadoDTO associadoAtualizado = associadoService.atualizar(new AssociadoDTO(associado.id(), "888.888.888-77"), associado.id());
 
-        assertEquals("888.888.888-77", associadoAtualizado.cpf());
+        assertEquals("88888888877", associadoAtualizado.cpf());
 
         associadoService.excluir(associado.id());
     }

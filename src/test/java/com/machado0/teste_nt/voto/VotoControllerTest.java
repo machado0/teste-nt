@@ -4,6 +4,7 @@ import com.machado0.teste_nt.associado.Status;
 import com.machado0.teste_nt.util.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,7 @@ public class VotoControllerTest {
 
     private MockMvc mockMvc;
 
+    @InjectMocks
     private VotoController votoController;
 
     @Mock
@@ -39,7 +41,6 @@ public class VotoControllerTest {
 
     @BeforeEach
     public void setup() {
-        votoController = new VotoController(votoServiceMock);
         mockMvc = MockMvcBuilders.standaloneSetup(votoController).build();
     }
 
@@ -98,20 +99,21 @@ public class VotoControllerTest {
     @Test
     public void listarResultadoTest() throws Exception {
         VotoDTO votoDTO1 = new VotoDTO(1L, 1L, 1L, true);
-        VotoDTO votoDTO2 = new VotoDTO(1L, 1L, 1L, true);
-        VotoDTO votoDTO3 = new VotoDTO(1L, 1L, 1L, false);
+        VotoDTO votoDTO2 = new VotoDTO(2L, 1L, 1L, true);
+        VotoDTO votoDTO3 = new VotoDTO(3L, 1L, 1L, false);
         ArrayList<VotoDTO> lista = new ArrayList<>();
 
         lista.add(votoDTO1);
         lista.add(votoDTO2);
         lista.add(votoDTO3);
 
-        when(votoServiceMock.listarResultados(anyLong())).thenReturn(new ResultadoDTO(Status.ABLE_TO_VOTE.toString(), lista));
-        mockMvc.perform(get("/votos/resultados/1"))
+        when(votoServiceMock.listarResultados(anyLong(), any())).thenReturn(new ResultadoDTO(Status.ABLE_TO_VOTE.toString(), new PageImpl<>(lista)));
+        mockMvc.perform(get("/votos/resultados/1")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultado", is(Status.ABLE_TO_VOTE.toString())))
-                .andExpect(jsonPath("$.votos.[0].voto", is(true)))
-                .andExpect(jsonPath("$.votos.[1].voto", is(true)))
-                .andExpect(jsonPath("$.votos.[2].voto", is(false)));
+                .andExpect(jsonPath("$.votos.content.[0].voto", is(true)))
+                .andExpect(jsonPath("$.votos.content.[1].voto", is(true)))
+                .andExpect(jsonPath("$.votos.content.[2].voto", is(false)));
     }
 }

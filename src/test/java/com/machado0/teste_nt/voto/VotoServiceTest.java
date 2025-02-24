@@ -129,7 +129,7 @@ public class VotoServiceTest {
         voto2 = votoService.criar(voto2);
         voto3 = votoService.criar(voto3);
 
-        assertEquals(3, votoService.listarResultados(pauta.id()).votos().size());
+        assertEquals(3, votoService.listarResultados(pauta.id(), Pageable.unpaged()).votos().getContent().size());
         votoService.excluir(voto.id());
         votoService.excluir(voto2.id());
         votoService.excluir(voto3.id());
