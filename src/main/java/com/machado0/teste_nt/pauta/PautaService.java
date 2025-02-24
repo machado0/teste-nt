@@ -39,7 +39,10 @@ public class PautaService {
     public PautaDTO buscarPorId(Long id) {
         return pautaRepository.findById(id)
                 .map(PautaMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Pauta não encontrada"));
+                .orElseThrow(() -> {
+                    log.error("Pauta {} não encontrada ao buscar por id", id);
+                    return new RuntimeException("Pauta não encontrada");
+                });
     }
 
     public Page<PautaDTO> listarTodas(Pageable pageable) {
@@ -53,6 +56,7 @@ public class PautaService {
 
     public PautaDTO atualizar(PautaDTO pauta, Long id) {
         if (!pautaRepository.existsById(id)) {
+            log.error("Pauta {} não encontrada ao atualizar", id);
             throw new RuntimeException("Pauta não encontrada");
         }
 
@@ -66,7 +70,10 @@ public class PautaService {
 
     public void abrirSessao(Long pautaId, OffsetDateTime tempoEncerramento) {
         Pauta pauta = pautaRepository.findById(pautaId)
-                .orElseThrow(() -> new RuntimeException("Pauta não encontrada"));
+                .orElseThrow(() -> {
+                    log.error("Pauta {} não encontrada ao buscar para abrir sessão", pautaId);
+                    return new RuntimeException("Pauta não encontrada");
+                });
         pauta.setTempoEncerramento(tempoEncerramento);
         Pauta pautaSalva = pautaRepository.save(pauta);
         enviarMensagemEncerramentoSessao(PautaMapper.toDTO(pautaSalva));
@@ -80,6 +87,7 @@ public class PautaService {
     }
 
     public void enviarMensagemEncerramentoSessao(PautaDTO pautaDTO) {
+        log.debug("Iniciando timer para o horário {}", pautaDTO.tempoEncerramento());
         new Timer().schedule(new EncerramentoSessaoTask(pautaDTO, kafkaProducerConfig.pautaDtoKafkaTemplate()), Date.from(pautaDTO.tempoEncerramento().toInstant()));
     }
 

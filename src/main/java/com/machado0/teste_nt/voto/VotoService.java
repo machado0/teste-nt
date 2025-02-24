@@ -2,6 +2,7 @@ package com.machado0.teste_nt.voto;
 
 import com.machado0.teste_nt.pauta.PautaDTO;
 import com.machado0.teste_nt.pauta.PautaService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import java.time.OffsetDateTime;
 import static java.util.Objects.nonNull;
 
 @Service
+@Slf4j
 public class VotoService {
 
     private final VotoRepository votoRepository;
@@ -38,7 +40,10 @@ public class VotoService {
     public VotoDTO buscarPorId(Long id) {
         return votoRepository.findById(id)
                 .map(VotoMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Voto não encontrado"));
+                .orElseThrow(() -> {
+                    log.error("Voto {} não encontrado ao buscar por id", id);
+                    return new RuntimeException("Voto não encontrado");
+                });
     }
 
     public Page<VotoDTO> listarTodos(Pageable pageable) {
@@ -52,6 +57,7 @@ public class VotoService {
 
     public VotoDTO atualizar(VotoDTO voto, Long id) {
         if (!votoRepository.existsById(id)) {
+            log.error("Voto {} não encontrado ao atualizar", id);
             throw new RuntimeException("Voto não encontrado");
         }
 
