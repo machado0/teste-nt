@@ -62,27 +62,27 @@ public class VotoService {
         return VotoMapper.toDTO(votoRepository.save(votoEntity));
     }
 
-    public ResultadoDTO listarResultados(Long pautaId) {
+    public ResultadoDTO listarResultados(Long pautaId, Pageable pageable) {
         ResultadoDTO resultadoDTO;
         int votosPositivos = 0;
-        List<VotoDTO> votos = listarVotosPorPauta(pautaId);
+        Page<VotoDTO> votos = listarVotosPorPauta(pautaId, pageable);
+        if (votos.getContent().isEmpty()) {
+            return new ResultadoDTO("Sem votos", votos);
+        }
         for (VotoDTO voto : votos) {
             if (voto.voto()) {
                 votosPositivos += 1;
             }
         }
-        if (votosPositivos > votos.size() / 2) {
-            resultadoDTO = new ResultadoDTO("Pauta aprovada", votos);
+        if (votosPositivos > votos.getContent().size() / 2) {
+            return new ResultadoDTO("Pauta aprovada", votos);
         } else {
-            resultadoDTO = new ResultadoDTO("Pauta reprovada", votos);
+            return new ResultadoDTO("Pauta reprovada", votos);
         }
-        return resultadoDTO;
     }
 
-    private List<VotoDTO> listarVotosPorPauta(Long pautaId) {
-        return votoRepository.findByPautaId(pautaId)
-                .stream()
-                .map(VotoMapper::toDTO)
-                .toList();
+    private Page<VotoDTO> listarVotosPorPauta(Long pautaId, Pageable pageable) {
+        return votoRepository.findByPautaId(pautaId, pageable)
+                .map(VotoMapper::toDTO);
     }
 }

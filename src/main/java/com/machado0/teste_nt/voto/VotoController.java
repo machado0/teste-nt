@@ -55,6 +55,6 @@ public class VotoController {
     public ResponseEntity<ResultadoDTO> listarResultados(@PathVariable Long pautaId,
                                                          @RequestParam(defaultValue = "0", required = false) int page,
                                                          @RequestParam(defaultValue = "10", required = false) int size) {
-        return ResponseEntity.ok(votoService.listarResultados(pautaId));
+        return ResponseEntity.ok(votoService.listarResultados(pautaId, PageRequest.of(page, size)));
     }
 }
