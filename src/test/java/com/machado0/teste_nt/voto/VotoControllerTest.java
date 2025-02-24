@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -107,7 +108,7 @@ public class VotoControllerTest {
         lista.add(votoDTO2);
         lista.add(votoDTO3);
 
-        when(votoServiceMock.listarResultados(anyLong(), any())).thenReturn(new ResultadoDTO(Status.ABLE_TO_VOTE.toString(), new PageImpl<>(lista)));
+        when(votoServiceMock.listarResultados(anyLong(), any())).thenReturn(new ResultadoDTO(Status.ABLE_TO_VOTE.toString(), new PageImpl<>(lista, PageRequest.of(0, 10), lista.size())));
         mockMvc.perform(get("/votos/resultados/1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
